@@ -12,6 +12,7 @@ class ProductModel {
   final Rating? rating;
   bool isFavorite;
   int count;
+  int quantity;
 
   ProductModel({
     this.isFavorite = false,
@@ -23,16 +24,16 @@ class ProductModel {
     this.image,
     this.rating,
     this.count = 1,
+    this.quantity = 1,
   });
 
- 
   ProductModel fromJson(Map<String, dynamic> json) {
     return _$ProductModelFromJson(json);
   }
-  
 
-  static List<ProductModel> fromList(List<dynamic> data) => data.map((e) => ProductModel().fromJson(e)).toList();
-  
+  static List<ProductModel> fromList(List<dynamic> data) =>
+      data.map((e) => ProductModel().fromJson(e)).toList();
+
   Map<String, dynamic> toJson() {
     throw UnimplementedError();
   }

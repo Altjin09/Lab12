@@ -13,15 +13,14 @@ class ShopPage extends StatefulWidget {
 }
 
 class _ShopPageState extends State<ShopPage> {
-
- Future<List<ProductModel>> _getData()  async {
-    String res = await DefaultAssetBundle.of(context).loadString("assets/products.json");
-    List<ProductModel> data= ProductModel.fromList(jsonDecode(res));
+  Future<List<ProductModel>> _getData() async {
+    String res =
+        await DefaultAssetBundle.of(context).loadString("assets/products.json");
+    List<ProductModel> data = ProductModel.fromList(jsonDecode(res));
     // ignore: use_build_context_synchronously
-    Provider.of<Global_provider>(context, listen: false).setProducts(data);
+    Provider.of<GlobalProvider>(context, listen: false).setProducts(data);
     // ignore: use_build_context_synchronously
-    return Provider.of<Global_provider>(context, listen: false).products;
-    
+    return Provider.of<GlobalProvider>(context, listen: false).products;
   }
 
   @override
@@ -65,7 +64,7 @@ class _ShopPageState extends State<ShopPage> {
         } else {
           return const Center(
             child: SizedBox(
-              height:25,
+              height: 25,
               width: 25,
               child: CircularProgressIndicator(),
             ),
@@ -74,4 +73,4 @@ class _ShopPageState extends State<ShopPage> {
       }),
     );
   }
-  }
+}

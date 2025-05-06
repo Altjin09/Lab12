@@ -1,64 +1,86 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/provider/globalProvider.dart';
+import '../provider/globalProvider.dart';
+import '../models/product_model.dart';
 
-// ignore: must_be_immutable
 class BagsPage extends StatelessWidget {
-
-  BagsPage({super.key});
- 
-   @override
+  @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<GlobalProvider>(context);
+    final cartItems = provider.cartItems;
 
-      return Consumer<Global_provider>(
-      builder: (context, provider, child) {
-        double total = provider.cartItems.fold(0, (sum, item) => sum + (item.price!));
-        return Scaffold(
-            appBar: AppBar(
-              title: Text('Cart'),
-            ),
-            body: ListView.builder(
-              itemCount: provider.cartItems.length,
+    double total = cartItems.fold(
+      0.0,
+      (sum, item) => sum + (item.price! * item.quantity),
+    );
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('My Bag')),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: cartItems.length,
               itemBuilder: (context, index) {
+                final item = cartItems[index];
                 return Card(
-                  margin: EdgeInsets.all(8.0),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   child: ListTile(
-                    leading: Image.network(
-                      provider.cartItems[index].image!,
-                      width: 50, // Adjust the width as needed
-                      height: 50, // Adjust the height as needed
+                    leading: Image.network(item.image!, width: 50),
+                    title: Text(item.title!),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Size: M'),
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.remove),
+                              onPressed: () {
+                                provider.decreaseQuantity(item);
+                              },
+                            ),
+                            Text('${item.quantity}'),
+                            IconButton(
+                              icon: const Icon(Icons.add),
+                              onPressed: () {
+                                provider.increaseQauntity(item);
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    title: Text(provider.cartItems[index].title!),
-                    subtitle: Text('Quantity: ${provider.cartItems[index].count}'),
-                    // You can add more details if needed, like the price
+                    trailing: Text(
+                        "\$${(item.price! * item.quantity).toStringAsFixed(2)}"),
                   ),
                 );
               },
             ),
-            bottomNavigationBar: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Total: \$${total.toStringAsFixed(2)}',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Implement buy all logic
-                      // For example, you might want to navigate to a checkout page
-                      // or display a confirmation dialog.
-                    },
-                    child: Text('Buy All'),
-                  ),
-                ],
-              ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Text("Total Amount: \$${total.toStringAsFixed(2)}",
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 12)),
+                  child:
+                      const Text("CHECK OUT", style: TextStyle(fontSize: 18)),
+                ),
+              ],
             ),
-          );
-      });
-}
+          ),
+        ],
+      ),
+    );
+  }
 }
